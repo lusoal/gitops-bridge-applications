@@ -13,7 +13,11 @@ RUN apk update && \
         jq \
         yq \
         bash \
-        curl # Added curl to fetch kubectl
+        curl \
+        groff \
+        less \
+        python3 \
+        py3-pip # Added python3 and pip for awscli
 
 # Install Terraform
 ENV TERRAFORM_VERSION=1.5.1
@@ -27,6 +31,9 @@ RUN curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubec
     chmod +x ./kubectl && \
     mv ./kubectl /usr/local/bin/kubectl
 
+# Install AWS CLI v2
+RUN pip3 install awscli --upgrade
+
 COPY . /
 # Display installed versions
-RUN terraform version && git version && kubectl version --client
+RUN terraform version && git version && kubectl version --client && aws --version
