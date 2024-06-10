@@ -1,6 +1,9 @@
 #!/bin/sh
 
 # Arguments
+echo "Repo URL: $1"
+echo "Git Branch: $2"
+
 REPO_URL=$1
 GIT_BRANCH=$2
 TARGET_DIR="/mnt/vol"
