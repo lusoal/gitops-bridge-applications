@@ -1,13 +1,12 @@
-# Use a lightweight base image
-FROM alpine:latest
+# Use a lightweight Debian-based image
+FROM debian:latest
 
 # Install necessary dependencies
-RUN apk update && \
-    apk add --no-cache \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
         ca-certificates \
         git \
-        openssh \
-        openssl \
+        openssh-client \
         wget \
         unzip \
         jq \
@@ -17,7 +16,8 @@ RUN apk update && \
         groff \
         less \
         python3 \
-        py3-pip # Added python3 and pip for awscli
+        python3-pip \
+        && rm -rf /var/lib/apt/lists/*
 
 # Install Terraform
 ENV TERRAFORM_VERSION=1.5.1
@@ -32,7 +32,11 @@ RUN curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubec
     mv ./kubectl /usr/local/bin/kubectl
 
 # Install AWS CLI v2
-RUN pip3 install awscli --upgrade
+ENV AWSCLI_VERSION=2.11.6
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWSCLI_VERSION}.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
+    rm -rf awscliv2.zip aws
 
 COPY . /
 # Display installed versions
